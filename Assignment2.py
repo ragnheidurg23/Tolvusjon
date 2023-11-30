@@ -29,7 +29,7 @@ def fit_line_ransac(data, iterations=100, threshold=2):
 
     return best_model, best_inliers
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
     ret, frame = cap.read()
