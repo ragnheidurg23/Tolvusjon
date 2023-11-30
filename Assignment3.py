@@ -81,14 +81,19 @@ while True:
                 cv2.circle(frame, tuple(intersection), 10, (0, 255, 0), -1)
 
             if len(valid_intersections) == 4:
-                ordered_intersections = order_corners(valid_intersections)
+                corners = order_corners(valid_intersections)
                 # Homography
-                pts1 = np.float32(ordered_intersections)
-                pts2 = np.float32([(0, 0), (300-1, 0), (300-1, 200-1), (0, 200-1)])
+                pts1 = np.float32(corners)
+                # Calculate the aspect ratio of the sides in pts1
+                aspect_ratio_pts1 = np.linalg.norm(pts1[3] - pts1[0]) / np.linalg.norm(pts1[1] - pts1[0])
+                width = 300
+                height = int(300*aspect_ratio_pts1)
+                # Adjust pts2 to have the same aspect ratio
+                pts2 = np.float32([[0, 0], [width-1, 0], [width-1, height- 1], [0, height - 1]])
                 matrix, x = cv2.findHomography(pts1, pts2)
 
                 # Perspective transformation
-                result = cv2.warpPerspective(frame, matrix, (300, 200))
+                result = cv2.warpPerspective(frame, matrix, (width, height))
 
                 cv2.imshow("Rectified Image", result)
 
